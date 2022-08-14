@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 // rejestracja routera workout
 const workoutRoutes = require("./routes/workouts"); // bez rozszerzenia .js sam sie zorientuje
+const userRoutes = require("./routes/user"); // bez rozszerzenia .js sam sie zorientuje
 
 // tworzy aplikacje express, nazwa pp jest dowolna
 const app = express();
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
 // używa routera z innego pliku, attaches thos all routes into the app
 // app.use(workoutRoutes);
 app.use("/api/workouts", workoutRoutes);
+app.use("/api/user", userRoutes);
 
 // connect to the db
 mongoose
