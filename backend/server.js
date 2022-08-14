@@ -1,13 +1,24 @@
 require("dotenv").config();
 
 const express = require("express");
+// połączenie z baza mongoDB za pomocą bibliteki mongoose
+const mongoose = require("mongoose");
+
+// rejestracja routera workout
+const workoutRoutes = require("./routes/workouts"); // bez rozszerzenia .js sam sie zorientuje
 
 // tworzy aplikacje express, nazwa pp jest dowolna
 const app = express();
 
 // rejestracja middlewarów globalnych
-// next jest wymagany bo inaczej nigdy nie przejdize do kolejnego middleware cyzli koljenj funkji routre
 // middleware
+
+// middleware pootrzebny żeby w POST czy PATCH dobrać się do danych wyssłanych do serverwa
+// express.json() middleware wbudowany z express, to robi, że jak przychodzi reqwuets do serwera to sprawdza czy nie ma jakiegoś body do requestu
+// a jeżeli jest to przekazuje go i dołącza do obiektu 'req' czyli request
+app.use(express.json());
+
+// next jest wymagany bo inaczej nigdy nie przejdize do kolejnego middleware cyzli koljenj funkji routre
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   // next MUSI być uruchomiony na sam koniec
@@ -16,12 +27,19 @@ app.use((req, res, next) => {
 
 // routes, żeby odpowiadał na tym enpoincie - potrzbene np do reacta
 // technicznie rzecz biorąc to też jest middleware
-app.get("/", (req, res) => {
-  res.json({ mssg: "Welcome to the app" });
-});
+// używa routera z innego pliku, attaches thos all routes into the app
+// app.use(workoutRoutes);
+app.use("/api/workouts", workoutRoutes);
 
-// nasłuchiwanie na odpowiednim porcie
-//listen for requests
-app.listen(process.env.PORT, () => {
-  console.log("listening on port 4000");
-});
+// connect to the db
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    // listen for requests tylko gdy mamy połaczenie z bazą
+    app.listen(process.env.PORT, () => {
+      console.log("Connected to db & listening on port: ", process.env.PORT);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
