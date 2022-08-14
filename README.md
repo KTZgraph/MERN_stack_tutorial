@@ -29,4 +29,5 @@ npm install date-fns
 
 ```sh
 npm install bcrypt
+npm install validator
 ```

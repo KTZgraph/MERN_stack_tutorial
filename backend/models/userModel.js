@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 const Schema = mongoose.Schema;
 
@@ -25,6 +26,18 @@ const userSchema = new Schema({
 // NIE MOŻNA UŻYWAĆ ARROW FUNCTION, bo używamy słowa kluczowe this - trzeba użyć zwykłej asynchronicznej funckji
 // userSchema.statics.signup = async (email, password) => {
 userSchema.statics.signup = async function (email, password) {
+  // walidacja pól
+  if (!email || !password) {
+    throw Error("All fields must be filled");
+  }
+  if (!validator.isEmail(email)) {
+    throw Error("Email is not valid");
+  }
+
+  if (!validator.isStrongPassword(password)) {
+    throw Error("Password is not strong enough");
+  }
+
   // WARNING npm install bcrypt
   // additional static method on method
   // 1 sprawdzam czy email już isntieje, jeśli duplikat to nawet nie próbuję coś robić
