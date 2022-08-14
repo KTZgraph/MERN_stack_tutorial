@@ -10,6 +10,7 @@ const WorkoutForm = () => {
   const [load, setLoad] = useState("");
   const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
   const handleSubmit = async (e) => {
     //   async funckja bo do api się odnosimy
@@ -32,7 +33,10 @@ const WorkoutForm = () => {
 
     if (!response.ok) {
       // to backend zwrca w razie błełdu  res.status(400).json({ error: error.message });
+      // troche łądniejsza obsługa błedów, gdy user nie wypełnił któregoś z pól formularza
       setError(json.error);
+      // listę z nazwami zwraca backend
+      setEmptyFields(json.emptyFields);
     }
 
     if (response.ok) {
@@ -42,6 +46,8 @@ const WorkoutForm = () => {
       setReps("");
       // czyszczenie błędu
       setError(null);
+      // czyszczenie listy niewypełnionych pól
+      setEmptyFields(null);
       console.log("new workout added", json);
       // aktualizowanie globalnego stanu danych, payload to tylko jeden nowo utworzony obiekt - zwrotka z serwera
       // ponieważ to aktulizuje globalny stan, to komponent Home się zrerenderuje
@@ -57,6 +63,8 @@ const WorkoutForm = () => {
         type="text"
         onChange={(e) => setTitle(e.target.value)}
         value={title}
+        // stylowanie inputu jeśli nie zostal wypełniony -cos dynamicznego
+        className={emptyFields?.includes("title") ? "error" : ""}
       />
 
       <label>Load (in kg):</label>
@@ -64,6 +72,8 @@ const WorkoutForm = () => {
         type="number"
         onChange={(e) => setLoad(e.target.value)}
         value={load}
+        // stylowanie inputu jeśli nie zostal wypełniony -cos dynamicznego
+        className={emptyFields?.includes("load") ? "error" : ""}
       />
 
       <label>Reps:</label>
@@ -71,6 +81,8 @@ const WorkoutForm = () => {
         type="number"
         onChange={(e) => setReps(e.target.value)}
         value={reps}
+        // stylowanie inputu jeśli nie zostal wypełniony -cos dynamicznego
+        className={emptyFields?.includes("reps") ? "error" : ""}
       />
 
       <button>Add Workout</button>

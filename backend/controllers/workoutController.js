@@ -36,11 +36,30 @@ const getWorkout = async (req, res) => {
   res.status(200).json(workout);
 };
 
-// create new workout
+// CREATE new workout
 const createWorkout = async (req, res) => {
   // dobieranie się do ciała, jakie jest wysłane do serwera dzięki middleware app.use(express.json());
   const { title, load, reps } = req.body;
   // tworzenie nowego dokumentu w kolekcji
+
+  // ładniejsza obsługa błedów dla usera, zeby nie widział błedów z kodu
+  let emptyFields = [];
+
+  if (!title) {
+    emptyFields.push("title");
+  }
+  if (!load) {
+    emptyFields.push("load");
+  }
+  if (!reps) {
+    emptyFields.push("reps");
+  }
+  if (emptyFields.length > 0) {
+    // czyli któreś pole jest puste to łądny komunikat do usera
+    return res
+      .status(400)
+      .json({ error: "Please fill in all the fields", emptyFields });
+  }
 
   // add doc to db
   try {
