@@ -38,6 +38,14 @@ export const workoutsReducer = (state, action) => {
         // so that locally in out application we have tha new workout as well
         workouts: [action.payload, ...state.workouts],
       };
+
+    case "DELETE_WORKOUT":
+      // obsługa usuwania obiektu
+      return {
+        // filtrowanie po całej liscie - state to poptrzedni stan
+        // payload to ten json zwrotka z serwera właśnie usuniety workout
+        workouts: state.workouts.filter((w) => w._id !== action.payload._id),
+      };
     default:
       // defaultowo akcja zwócenie aktualnego stanu
       return state;
