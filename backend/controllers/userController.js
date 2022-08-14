@@ -7,10 +7,18 @@ const loginUser = async (req, res) => {
 
 //signup user
 const signupUser = async (req, res) => {
-  res.json({ mssg: "signup user" });
+  const { email, password } = req.body;
+
+  try {
+    // użycie naszej funckji statycznej stworzonej na modelu
+    const user = await User.signup(email, password);
+    // jako zwrotne json serwer zwraca email i nowo utworozny dokument user
+    res.status(200).json({ email, user });
+  } catch (error) {
+    // dziwne błedy jak się słowa kluczowe źle poda np "pasword": "abc" zamiast "password"
+    // "error": "data and salt arguments required"
+    res.status(400).json({ error: error.message });
+  }
 };
 
-module.exports = {
-  loginUser,
-  signupUser,
-};
+module.exports = { signupUser, loginUser };

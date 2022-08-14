@@ -22,3 +22,11 @@ we froncie
 ```sh
 npm install date-fns
 ```
+
+# Backend
+
+- https://www.youtube.com/watch?v=mjZIv4ey0ps&list=PL4cUxeGkcC9g8OhpOZxNdhXggFz2lOuCT&index=3 5:05
+
+```sh
+npm install bcrypt
+```
