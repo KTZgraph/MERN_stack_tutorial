@@ -1,3 +1,6 @@
+// This might seeem like a lot of setup for just a small bit of global states but in the long run it makes things much easier
+// especially when a lot of different components start to share and update the same state
+
 import { createContext, useReducer } from "react";
 
 // pamietać o eksporcie bo bedziemy tego potrzebować w innym pliku
@@ -11,6 +14,7 @@ export const workoutsReducer = (state, action) => {
   // and the action type would be ddifferent for each of those different changes
   switch (action.type) {
     case "SET_WORKOUTS":
+      // aktualizuje całą listę workouts, payload to tak naprawdę cała lista obiektow ktorą dostajemy z serwera
       // zależnie od typyu ackji zwracamy nową wartość którą checmy żeby był stan, wiec zwracamy nowy obiekt
       // if the case was 'SET_WORKOUTS' that would mean we want to set all of the workouts and what we do in each of these cases is return a new value
       // tha we want the state to be, so we return a new object in essence
@@ -59,6 +63,7 @@ export const WorkoutsContextProvider = ({ children }) => {
   // so when we call this `dispatch` function in turn our reducer function is invokee which is this `workoutsReducer` function and it passes the action into the
   // reducer function so that it can do its thing and update the state using that information and data
   const [state, dispatch] = useReducer(workoutsReducer, {
+    // ta wartość może się zmienić w czasie
     workouts: null,
   });
 
@@ -68,7 +73,10 @@ export const WorkoutsContextProvider = ({ children }) => {
     // value={{workouts : []} to zło, bo p[rzeciez dane cały czas sie zmieniają - create, deltele , update, to powinien być 'a dynamic state value'
     // <WorkoutsContext.Provider value={{workouts : []}}> - lepszy jest useReducer inny hook wbudowany w Reacta
     // teraz musimy dostarczyć state i dispatch wartosci do wszsytkich opakowanych komponentów - ale te wartosci(funckja, obiekt z atrbutami) musza być w obiekcie
-    <WorkoutsContext.Provider value={{ state, dispatch }}>
+    // WARNING [19:53] użyma tutaj spread operator
+    // so that insted of just providing this whole object waht I'm doing is I'm spreadiing out the different properties inside this object and we're providing those
+    // so now this might as well just be  <WorkoutsContext.Provider value={{state.workouts, dispatch }}> like so, but it would be state.workouts
+    <WorkoutsContext.Provider value={{ ...state, dispatch }}>
       {/* konsumowanie wartosci state, dispatch jest całkiem proste możemy użyć wbudowany w reacata hook useContext a potem wyspecifikować któy kontekst chcemy użyc
       but what I like to do is make a custom hook for each context that I have for example I'd make a use wokroput context hook for this context we just made and then 
       whenever I needed to use this context I'd just invoke tha hook, so let's do that - let;s make a new folder called `hooks`

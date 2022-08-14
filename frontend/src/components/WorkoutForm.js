@@ -1,6 +1,11 @@
 import { useState } from "react";
+// customowy hook do aktualizacji globalnego stanu danych
+import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 
 const WorkoutForm = () => {
+  // invoke my custom hook
+  const { dispatch } = useWorkoutsContext();
+
   const [title, setTitle] = useState("");
   const [load, setLoad] = useState("");
   const [reps, setReps] = useState("");
@@ -38,6 +43,9 @@ const WorkoutForm = () => {
       // czyszczenie błędu
       setError(null);
       console.log("new workout added", json);
+      // aktualizowanie globalnego stanu danych, payload to tylko jeden nowo utworzony obiekt - zwrotka z serwera
+      // ponieważ to aktulizuje globalny stan, to komponent Home się zrerenderuje
+      dispatch({ type: "CREATE_WORKOUT", payload: json });
     }
   };
 

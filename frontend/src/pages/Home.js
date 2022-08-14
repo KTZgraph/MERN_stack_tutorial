@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 
 // components
 import WorkoutDetails from "../components/WorkoutDetails";
 import WorkoutForm from "../components/WorkoutForm";
 
 const Home = () => {
-  const [workouts, setWorkouts] = useState(null);
+  // mój cutomowy hook musi być osobno na górze kompinetu (w sensie nie moze być w hooku useState); workouts na początku null
+  const { workouts, dispatch } = useWorkoutsContext();
 
   // cały useEffect NIE powinien być async
   useEffect(() => {
@@ -14,14 +16,12 @@ const Home = () => {
       //   jak mamy "proxy": "http://localhost:4000", w forntent/package.json to do fetcha nie możemy używać http://localhost:4000
       //   top też usuwa błą CORS z consoli
       const response = await fetch("/api/workouts");
-      console.log("response: ", response);
-      // parsujemy odpowiedź do jsona listy
       const json = await response.json();
-      console.log("json: ", json);
 
       // sprawdzam czy 200 HTTP
       if (response.ok) {
-        setWorkouts(json);
+        // aktualizowanie globalnego stanu
+        dispatch({ type: "SET_WORKOUTS", payload: json });
       }
     };
 
