@@ -21,13 +21,17 @@ const Home = () => {
       // sprawdzam czy 200 HTTP
       if (response.ok) {
         // aktualizowanie globalnego stanu
+        // użycie zewnętrzenj funckji która nigdzi enei jest w useEffect zdefiniowana
+        // to mamy warning Line 32:6:  React Hook useEffect has a missing dependency: 'dispatch'
         dispatch({ type: "SET_WORKOUTS", payload: json });
       }
     };
 
     fetchWorkouts();
     // [] dependency - useEffect hook wywoła się tylko raz gdy argument to pusta lista
-  }, []);
+    //dispatch to zewnętrzna funckja i trzeba ją dodać jako dependecy
+    // -that basically means whgenever the dispatch function changes in any way shape or form then it's going to rerun this useEffect function
+  }, [dispatch]);
 
   return (
     <div className="home">

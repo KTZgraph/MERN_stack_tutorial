@@ -1,5 +1,8 @@
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 
+//date fns
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutsContext();
 
@@ -31,8 +34,14 @@ const WorkoutDetails = ({ workout }) => {
         <strong>Reps: </strong>
         {workout.reps}
       </p>
-      <p>{workout.createdAt}</p>
-      <span onClick={handleClick}>delete</span>
+      <p>
+        {/* formatiopwanie daty na symaptyczniejszy 1_ argument to obiekt daty, 2)argument to suffin np dokąłda słówko 'ago' czylii jest '2 days ago' zamiast '2 days'*/}
+        {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}
+      </p>
+      {/* ikonki googla, a słowo między tagami to musi być nazwa ikonki - np tutaj delete to nazwa ikonki kosza */}
+      <span className="material-symbols-outlined" onClick={handleClick}>
+        delete
+      </span>
     </div>
   );
 };
