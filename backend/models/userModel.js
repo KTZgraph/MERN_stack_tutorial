@@ -59,5 +59,29 @@ userSchema.statics.signup = async function (email, password) {
   return user;
 };
 
+// statyczna metoda do logowania
+// zwykła funckja bo do this się odnoszę
+userSchema.statics.login = async function (email, password) {
+  // walidacja pól
+  if (!email || !password) {
+    throw Error("All fields must be filled");
+  }
+
+  // szukanie usera w bazie
+  const user = await this.findOne({ email });
+
+  if (!user) {
+    throw Error("Incorrect email");
+  }
+  // sprawdzanie hasła 1) plain text password, zahashowane hasło zwraca boola
+  const match = await bcrypt.compare(password, user.password);
+
+  if (!match) {
+    throw Error("Incorrect password");
+  }
+
+  return user;
+};
+
 // zwraca model stworozny na podstawie Schema
 module.exports = mongoose.model("User", userSchema);

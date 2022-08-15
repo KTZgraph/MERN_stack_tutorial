@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
+// WARNING npm install jsonwebtoken
 const createToken = (_id) => {
   // _id zamiast zwykłego, bo to id z mongoDB, potrzebne bo id jest cześcią `payload` JWT tokena
   // jwt.sign({}) trzy argumnety 1) obiekt który w pewien sposób reprezentuje token który chcemy stworzyć można dać co sie chce BYLE NIE BYŁO SENSITIVE
@@ -11,7 +12,21 @@ const createToken = (_id) => {
 
 //login user
 const loginUser = async (req, res) => {
-  res.json({ mssg: "login user" });
+  // dane z POST
+  const { email, password } = req.body;
+
+  // logujemy
+  try {
+    // użycie naszej funckji statycznej stworzonej na modelu
+    const user = await User.login(email, password);
+    // stopwrzenie usera
+    const token = createToken(user._id);
+
+    // zwrócenie tokena dla usera
+    res.status(200).json({ email, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 //signup user
