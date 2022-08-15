@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContex";
 
-export const useSignup = () => {
+export const useLogin = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
 
   // gloablny stan apliakcji
   const { dispatch } = useAuthContext();
 
-  const signup = async (email, password) => {
+  const login = async (email, password) => {
     setIsLoading(true);
     setError(null);
-    const response = await fetch("/api/user/signup", {
+    const response = await fetch("/api/user/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -37,5 +37,5 @@ export const useSignup = () => {
   };
 
   //   trzeba zwócić na końcu tgę funckję z wewnątrz hooka
-  return { signup, isLoading, error };
+  return { login, isLoading, error };
 };
