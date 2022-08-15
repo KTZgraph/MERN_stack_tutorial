@@ -143,3 +143,10 @@ your-256-bit-secret
 
 - gdy sie coś zmieni w tokenei to nie tylko druga cześć payload się zmienia ale także sygnatura
 - nie da się klatwo podrobić tokena tylko zmieniając dane
+
+
+## JTW instalacja
+### backend
+```sh
+npm install jsonwebtoken
+```
