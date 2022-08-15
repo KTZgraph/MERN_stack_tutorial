@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -21,6 +21,22 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
   });
+
+  //   sprawdzam czy token jest w localstorage bo inaczej co odświeżenie te informacje giną i dla frontu to jest jakby user nie był zalogowany
+  useEffect(
+    () => {
+      // sprawdzam czym mam token w lokal storange - parsowanie jsona na obiket
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      //   jeśli mam wartość
+      if (user) {
+        // to wywołaj akcję login z payloadem z localStorage, jak jest user to go zapisze do globalnego stanu
+        dispatch({ type: "LOGIN", payload: user });
+      }
+    },
+    // pusta list a- only fires once
+    []
+  );
 
   console.log("AuthContext state: ", state);
 
