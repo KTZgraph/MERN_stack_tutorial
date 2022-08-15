@@ -5,6 +5,7 @@ https://www.youtube.com/watch?v=98BzS5Oz5E4&amp;list=PL4cUxeGkcC9iJ_KkrkBZWZRHVw
 # 2. MERN Authentication Tutorial
 
 https://www.youtube.com/watch?v=WsRBmwNkv3Q&list=PL4cUxeGkcC9g8OhpOZxNdhXggFz2lOuCT
+- https://github.com/iamshaunjp/MERN-Auth-Tutorial
 
 - https://jwt.io/
 
