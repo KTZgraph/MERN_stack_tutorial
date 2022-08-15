@@ -36,6 +36,7 @@ const signupUser = async (req, res) => {
   try {
     // użycie naszej funckji statycznej stworzonej na modelu
     const user = await User.signup(email, password);
+    console.log("user backend: ", user);
     // jako zwrotne json serwer zwraca email i nowo utworozny token
     // JWT tutal zwrócę token userowi
 

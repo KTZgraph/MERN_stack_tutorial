@@ -20,6 +20,11 @@ const workoutSchema = new Schema(
       type: Number,
       required: true,
     },
+    user_id: {
+      // autor ćwiczenia - user zalogowany któy to dodał - obowiązkowe
+      type: String,
+      required: true,
+    },
   },
   {
     // drugi argument też obiekt, fajne że z automatu dodaje daty kiedy utworzono czy zmodyfikowano

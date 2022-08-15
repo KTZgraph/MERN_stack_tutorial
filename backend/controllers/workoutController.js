@@ -63,8 +63,12 @@ const createWorkout = async (req, res) => {
 
   // add doc to db
   try {
+    // w middleware backend\middleware\requireAuth.js dopisujemy i dusera
+    // wiemy, ze mamy te dane, bo wyżej sprawdzam właśnie w middleware if(!user){return res.status(401).json({error:'Aiuthorization})}
+    const user_id = req.user._id;
     // Workout.create() jest asynchroniczne, więc trzeba zmienić sygnaturę funkcji createWorkout
-    const workout = await Workout.create({ title, load, reps });
+    // user_id to autor
+    const workout = await Workout.create({ title, load, reps, user_id });
     // zwrotka z serwera - stauts i nowo utworzony obiekt
     res.status(200).json(workout);
   } catch (error) {
