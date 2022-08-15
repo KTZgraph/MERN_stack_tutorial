@@ -4,11 +4,15 @@ const Workout = require("../models/workoutModel");
 // importowanie biblioteki, zeby zwalidować id z urla z rządzania klienta
 const mongoose = require("mongoose");
 
-//get all workouts
+//get all workouts ale tylko te któe stworzył zalogowany user
 const getWorkouts = async (req, res) => {
   // pusty obiket jako argumnet funckji .find - zwróci wszystkie obiekty z bazy
   //   obiekty są posortowane malejące wzgledem daty utworzenia dokumentu w bazie - najnowsze jako pierwsze
-  const workouts = await Workout.find({}).sort({ createdAt: -1 });
+
+  const user_id = req.user._id;
+  // const workouts = await Workout.find({}).sort({ createdAt: -1 });
+  // wyszuka tylko te dokuemnty któych user_id jest równy zmiennej z req.user._id któa została dodana przez middleware w backend\middleware\requireAuth.js
+  const workouts = await Workout.find({ user_id }).sort({ createdAt: -1 });
 
   res.status(200).json(workouts);
 };

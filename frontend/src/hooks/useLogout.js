@@ -1,7 +1,10 @@
 import { useAuthContext } from "./useAuthContex";
+import { useWorkoutsContext } from "./useWorkoutsContext";
 
 export const useLogout = () => {
   const { dispatch } = useAuthContext();
+  // destrukturyzacja ze zmianą nazwy bo konfilkt
+  const { dispatch: workoutsDispatch } = useWorkoutsContext();
 
   // wewnętrzna funckja
   const logout = () => {
@@ -11,6 +14,9 @@ export const useLogout = () => {
 
     //dispatch logout action - bez payload
     dispatch({ type: "LOGOUT" });
+
+    // czyszczenie globalnego stanu z ćwiczeń
+    workoutsDispatch({ type: "SET_WORKOUTS", payload: null });
   };
 
   // return żeby używać gdzieś indziej tej funckji wewnętrznej

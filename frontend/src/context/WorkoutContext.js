@@ -13,6 +13,7 @@ export const workoutsReducer = (state, action) => {
   // bo moze chcemy usunąć dane albo edytować a workout or add a workout or set them all etc
   // and the action type would be ddifferent for each of those different changes
   switch (action.type) {
+    // przydatne gdy się wylogowujemy i chcemy "wyzerować" globalny stan ćwiczęń, bo po zalogowaniia jako nowy user przez moment migają nam ćwiczenia poprzedieo zalogowanego usera
     case "SET_WORKOUTS":
       // aktualizuje całą listę workouts, payload to tak naprawdę cała lista obiektow ktorą dostajemy z serwera
       // zależnie od typyu ackji zwracamy nową wartość którą checmy żeby był stan, wiec zwracamy nowy obiekt
