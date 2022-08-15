@@ -1,17 +1,27 @@
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
+import { useAuthContext } from "../hooks/useAuthContex";
 
 //date fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
   const handleClick = async () => {
     // async to teraz mozemy użyć w środku await
     // jest to potrzebne bo komunikujemy się z naszym api, które odpowiada asynchronicznie
+    if (!user) {
+      // jeśli user NIe zalgoowany, to po prostu zwrca i nic nie robi
+      return;
+    }
+
     // iid jest potrzebne do endpointa, a mamy do niego dostęp bo cały komponent ma przekazany jako props konkrenty obiket workout
     const response = await fetch("/api/workouts/" + workout._id, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
     });
 
     // json to zwrtoka z serwera w formacie json, tutaj serwer zwrócić właśnie usunięty obiekt z bazy

@@ -1,10 +1,12 @@
 import { useState } from "react";
 // customowy hook do aktualizacji globalnego stanu danych
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
+import { useAuthContext } from "../hooks/useAuthContex";
 
 const WorkoutForm = () => {
   // invoke my custom hook
   const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
   const [title, setTitle] = useState("");
   const [load, setLoad] = useState("");
@@ -16,6 +18,13 @@ const WorkoutForm = () => {
     //   async funckja bo do api się odnosimy
     e.preventDefault();
 
+    // sprawdzam czy jest user
+    if (!user) {
+      // jak nie zalogowany
+      setError("You must be logged in");
+      return;
+    }
+
     // dummy workout object
     const workout = { title, load, reps };
 
@@ -26,6 +35,7 @@ const WorkoutForm = () => {
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
       },
     });
 
