@@ -22,6 +22,7 @@ export const useWorkoutsContext = () => {
   // and if it's being used outside tha component tree then the context will be `null` so in tha case insted of returning the context which would be pointless when it;s null
   // we can throw an error
   if (!context) {
+    // sprawdza czy na pewno go używamy w root komponent, a jeśli nie to zwraca bład
     // so if we don't have a value for it, then we do something and the thing we want to do is throw an error
     throw Error(
       "useWorkoutsContext must be used inside an WorkoutsContextProvider"
