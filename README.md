@@ -65,23 +65,46 @@ https://jwt.io/
 ### budowa tokena
 
 - skąłda się z 3 cześci oddzielonych kropką
+
 #### Header
+
 Contain the algorith used for the JWT
+
 #### Payload
-Contains non-sensitive uesr data (e.g a user id)  that the server can use to identity the authenticated user
+
+Contains non-sensitive uesr data (e.g a user id) that the server can use to identity the authenticated user
+
 #### Signature
+
 Used to verify the token by the server
 whixh the server can use to verify the authenticity of the token and to make sure it's not been tampered with and that last step is really important [!]
 because imagine I login as person `a` and receive a token, then when I get the token I decode it and I change the user email or id isnide the payload someone else's email or id belonging to person `b`
 then I could encode it again and send it back to the server with some kind of request to try trick the server into thinking I'm logged in as person `b`
-so I can access that other user's data so that's what the signature's there for to verify the server that the token hasn't been changed the way it does this is a little bit complicated but I'm going to try to explaint in a kind of simple way that makes sense
+so I can access that other user's data so that's what the signature's there for to verify the server that the token hasn't been changed the way it does this is a little bit complicated but I'm going to try to explaint in a kind of simple way that makes sense.
+So first of all when a user sends a successful login or signup request to authenticate themselves the server generates a token it does this by first of all
+making the payload and the headers part using the user's details like their unique id
+then it hashes both of these things together (`Header` i `Payload` i `sekret`-znany tylko serwerowi są `razem hashowane` i wychodzi `Signature`) with a secret string known only to the server and the result is a `Signature` which is a random string of characters.
+Now this unique signature for this user can only ever be made by the server, because only the server knows the secret string `Secret` used to make the signature.
+So for this reason the secret string must remain a secret know only to the server because it's the key to unlocking and veryfing the JSON WEB TOKEN
+so never publish the secret to anything like github or use it with your public code.
+So these three things (`Header`, `Payload`, `Secret`) hash together make up the signature and that signature is then added onto the json web token as the third part (ostatnia trzecia cześć json web tokena) this process is called `signing the token` (cześć `Signature`).
+And the other two parts are just the encoded version of the header and the payload individually so once the server's created this token it can send it to the browser and
+then from the browser if we ever need to make a request for any resourse that's protected for example we'd send this token along with it.
+The server can the use the `secret` and `hash` it with the first two parts of the token (`Header`, `Payload`) to verify the `Signature` if the result of that matches the signature on the token we know that the token hasn't been tampered with. But if they don't match then we know it's not valid and we can refuse access to the user
+(server jak dostaje tokena to sobie bierze header i payload hashuje je ze swoim sekretem który zna tylko serwer a potem porównuje czy mu wyszła taka sama wartość jak trzecia cześć JWT czyli Signature)
+
+Now you know a little of the JWT - how it's work under the hood.
+Now we need to use them to implement this authentication flow on aour API and the frontend, so that whenever a user either sends a valid signup or login request we create a token for that user and send it back to the browser and for any future requests the browser makes on behalf of rthat user it can send that token along with it
+That way we can verify the token on the server and provide access to protected resources like the workouts data to authenticated
 
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
 1. HEADER: (zawiera metadane o tokenie i użytym algorytmie)
+
 - https://auth0.com/blog/rs256-vs-hs256-whats-the-difference/
+
 ```javascript
 {
   "alg": "HS256",
@@ -90,7 +113,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 ```
 
 2. PAYLOAD: (dane o użytkowniku jak id albo email)
-wiec na serwerze gdy token jest zdekodowany it can seee which user is authenticated or logged in but IMPORTANT: this payload should not contain any sensitive data like a password because it can be easly decoded by hackers if the connection isn't secure and they get a hold of the token
+   wiec na serwerze gdy token jest zdekodowany it can seee which user is authenticated or logged in but IMPORTANT: this payload should not contain any sensitive data like a password because it can be easly decoded by hackers if the connection isn't secure and they get a hold of the token
 
 ```javascript
 {
@@ -101,21 +124,22 @@ wiec na serwerze gdy token jest zdekodowany it can seee which user is authentica
 ```
 
 3. VERIFY SIGNATURE (Token signature)
-This is what the server utimately uses to verify that the token is valid and that it hasn't been tampered with.
-Now also quickly notice tha when I change something of the right like the payload the encoded version changes as well and not just a purple bit which corresponds to the payload but the signature ass well so changing anything in the decoded version will ultimately change the encoded token including the siignature and that;s important because it means that the server 
-is going to be able to check using the signature iif the token has been changed in any way shape or form 
-So now what I't like to do is spening a few minutes explaing how the server verifies these tokens and exactly how this signature works right here 
+   This is what the server utimately uses to verify that the token is valid and that it hasn't been tampered with.
+   Now also quickly notice tha when I change something of the right like the payload the encoded version changes as well and not just a purple bit which corresponds to the payload but the signature ass well so changing anything in the decoded version will ultimately change the encoded token including the siignature and that;s important because it means that the server
+   is going to be able to check using the signature iif the token has been changed in any way shape or form
+   So now what I't like to do is spening a few minutes explaing how the server verifies these tokens and exactly how this signature works right here
+
 ```
 HMACSHA256(
   base64UrlEncode(header) + "." +
   base64UrlEncode(payload),
-  
+
 your-256-bit-secret
 
 ) secret base64 encoded
 ```
 
-
 ## JWT zmiany jakiego kolwiek pola
+
 - gdy sie coś zmieni w tokenei to nie tylko druga cześć payload się zmienia ale także sygnatura
 - nie da się klatwo podrobić tokena tylko zmieniając dane
